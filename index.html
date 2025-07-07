@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tank Run - Retro Tank Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+        }
+        
+        #gameContainer {
+            position: relative;
+            border: 2px solid #00ff00;
+            background: #000;
+        }
+        
+        #gameCanvas {
+            display: block;
+            background: #1a2d1a;
+        }
+        
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #00ff00;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 100;
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border: 2px solid #ff0000;
+            text-align: center;
+            display: none;
+        }
+        
+        #menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border: 2px solid #00ff00;
+            text-align: center;
+        }
+        
+        #nameInput, #leaderboard {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border: 2px solid #00ff00;
+            text-align: center;
+            min-width: 300px;
+        }
+        
+        #leaderboardList {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #00ff00;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #004400;
+        }
+        
+        .leaderboard-entry:last-child {
+            border-bottom: none;
+        }
+        
+        button {
+            background: #2d4a2d;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #00ff00;
+            color: #000;
+        }
+        
+        #instructions {
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="1024" height="768"></canvas>
+        
+        <div id="ui">
+            <div>Player: <span id="playerNameDisplay">Unknown</span></div>
+            <div>Health: <span id="health">♥♥♥♥♥♥♥♥♥</span></div>
+            <div>Lives: <span id="lives">3</span></div>
+            <div>Ammo: <span id="ammo">30</span></div>
+            <div>TNT: <span id="tnt">3</span></div>
+            <div>Level: <span id="level">1</span></div>
+            <div>Score: <span id="score">0</span></div>
+        </div>
+        
+        <div id="menu">
+            <h1>TANK RUN</h1>
+            <p>Retro Tank Combat Game</p>
+            <button onclick="showNameInput()">Start Game</button>
+            <button onclick="showLeaderboard()">Leaderboard (L)</button>
+            <button onclick="showInstructions()">Instructions</button>
+            <div id="instructions" style="display: none;">
+                <h3>Controls:</h3>
+                <p>WASD or Arrow Keys - Move</p>
+                <p>Q/E - Rotate Turret</p>
+                <p>Spacebar - Shoot</p>
+                <p>B - Place TNT</p>
+                <p>N - Detonate all TNT</p>
+                <p>C - Hide behind cover</p>
+                <p>M - Toggle mini-map</p>
+                <p>P - Pause/Resume</p>
+                <p>Q - Quit to menu</p>
+                <p>L - Show leaderboard</p>
+                <p>X - Call for multiplayer help</p>
+                <br>
+                <p>Survive 20 levels across different terrains!</p>
+                <p>Collect ammo bags and med packs to survive.</p>
+                <p>Use TNT strategically to destroy enemies and trees!</p>
+            </div>
+        </div>
+        
+        <div id="nameInput" style="display: none;">
+            <h2>ENTER YOUR NAME</h2>
+            <input type="text" id="playerName" maxlength="15" placeholder="Enter your name..." 
+                   style="background: #2d4a2d; color: #00ff00; border: 2px solid #00ff00; padding: 10px; 
+                          font-family: 'Courier New', monospace; font-size: 16px; text-align: center;">
+            <br><br>
+            <button onclick="startGameWithName()">START GAME</button>
+            <button onclick="showMenu()">BACK</button>
+        </div>
+        
+        <div id="leaderboard" style="display: none;">
+            <h2>LEADERBOARD</h2>
+            <div id="leaderboardList" style="text-align: left; margin: 20px 0;">
+                <!-- Leaderboard entries will be populated here -->
+            </div>
+            <button onclick="addTestScore()">Add Test Score</button>
+            <button onclick="clearLeaderboard()">Clear Scores</button>
+            <button onclick="closeLeaderboard()">BACK</button>
+        </div>
+        
+        <div id="gameOver">
+            <h2>GAME OVER</h2>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <p>Level Reached: <span id="finalLevel">1</span></p>
+            <button onclick="restartGame()">Play Again</button>
+            <button onclick="shareScore()">Share Score</button>
+            <button onclick="showMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <script>
+        // Global UI functions that need to be available immediately
+        function showNameInput() {
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('nameInput').style.display = 'block';
+            document.getElementById('playerName').focus();
+        }
+
+        function showMenu() {
+            console.log('showMenu called');
+            document.getElementById('menu').style.display = 'block';
+            document.getElementById('nameInput').style.display = 'none';
+            document.getElementById('leaderboard').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'none';
+            document.getElementById('instructions').style.display = 'none';
+            
+            // Set game state to menu
+            if (window.game) {
+                window.game.gameState = 'menu';
+                console.log('Game state changed to menu');
+            }
+        }
+        
+        function closeLeaderboard() {
+            console.log('closeLeaderboard called');
+            document.getElementById('leaderboard').style.display = 'none';
+            
+            // If game is running, resume it
+            if (window.game && window.game.player && window.game.gameState === 'paused') {
+                window.game.gameState = 'playing';
+                console.log('Leaderboard closed, resuming game');
+            } else {
+                // Otherwise show main menu
+                showMenu();
+            }
+        }
+
+        function showInstructions() {
+            const instructions = document.getElementById('instructions');
+            instructions.style.display = instructions.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function startGameWithName() {
+            const nameInput = document.getElementById('playerName');
+            const playerName = nameInput.value.trim() || 'Anonymous';
+            
+            // Wait for Game class to be available
+            if (typeof Game === 'undefined') {
+                console.error('Game class not yet loaded, retrying...');
+                setTimeout(() => startGameWithName(), 100);
+                return;
+            }
+            
+            if (!window.game) {
+                window.game = new Game();
+            }
+            
+            window.game.playerName = playerName;
+            document.getElementById('playerNameDisplay').textContent = playerName;
+            document.getElementById('nameInput').style.display = 'none';
+            window.game.startGame();
+        }
+
+        function showLeaderboard() {
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('leaderboard').style.display = 'block';
+            updateLeaderboardDisplay();
+        }
+
+        function updateLeaderboardDisplay() {
+            console.log('updateLeaderboardDisplay called');
+            const leaderboardList = document.getElementById('leaderboardList');
+            const scores = JSON.parse(localStorage.getItem('tankRunLeaderboard') || '[]');
+            
+            console.log('Loaded scores from localStorage:', scores);
+            
+            if (scores.length === 0) {
+                leaderboardList.innerHTML = '<p>No scores yet! Play the game to set a high score.</p>';
+                return;
+            }
+            
+            const sortedScores = scores.sort((a, b) => b.score - a.score).slice(0, 10);
+            console.log('Sorted top scores:', sortedScores);
+            
+            leaderboardList.innerHTML = sortedScores
+                .map((entry, index) => 
+                    `<div class="leaderboard-entry">
+                        <span>${index + 1}. ${entry.name || 'Anonymous'}</span>
+                        <span>Level ${entry.level || 1} - ${entry.score || 0} pts</span>
+                    </div>`
+                ).join('');
+                
+            console.log('Leaderboard HTML updated');
+        }
+
+        function clearLeaderboard() {
+            if (confirm('Clear all scores?')) {
+                localStorage.removeItem('tankRunLeaderboard');
+                updateLeaderboardDisplay();
+            }
+        }
+        
+        function addTestScore() {
+            // Add a test score for debugging
+            const scores = JSON.parse(localStorage.getItem('tankRunLeaderboard') || '[]');
+            scores.push({
+                name: 'Test Player',
+                score: 5000,
+                level: 5,
+                date: new Date().toLocaleDateString()
+            });
+            localStorage.setItem('tankRunLeaderboard', JSON.stringify(scores));
+            updateLeaderboardDisplay();
+            console.log('Test score added');
+        }
+
+        function shareScore() {
+            if (window.game) {
+                const text = `I just scored ${window.game.score} points and reached level ${window.game.currentLevel} in Tank Run!`;
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Tank Run Score',
+                        text: text,
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback - copy to clipboard
+                    navigator.clipboard.writeText(text).then(() => {
+                        alert('Score copied to clipboard!');
+                    }).catch(() => {
+                        alert(text);
+                    });
+                }
+            }
+        }
+
+        function startGame() {
+            // Wait for Game class to be available
+            if (typeof Game === 'undefined') {
+                console.error('Game class not yet loaded, retrying...');
+                setTimeout(() => startGame(), 100);
+                return;
+            }
+            
+            if (!window.game) {
+                window.game = new Game();
+            }
+            window.game.startGame();
+        }
+
+        function restartGame() {
+            if (window.game) {
+                window.game.startGame();
+            }
+            document.getElementById('gameOver').style.display = 'none';
+        }
+        
+        // Debug function to test UI
+        function testUI() {
+            console.log('Testing UI elements...');
+            const elements = ['health', 'lives', 'ammo', 'tnt', 'level', 'score', 'playerNameDisplay'];
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    console.log(`${id}: found, current text: "${element.textContent}"`);
+                    element.style.color = '#ffff00'; // Make it yellow for testing
+                } else {
+                    console.error(`${id}: NOT FOUND`);
+                }
+            });
+            
+            const uiDiv = document.getElementById('ui');
+            if (uiDiv) {
+                console.log('UI div found, display:', uiDiv.style.display);
+                uiDiv.style.border = '2px solid red'; // Add red border for testing
+            } else {
+                console.error('UI div NOT FOUND');
+            }
+        }
+        
+        // Global updateUI function (fallback if ui.js not loaded)
+        function updateUI() {
+            const gameInstance = window.game;
+            if (!gameInstance || !gameInstance.player) {
+                console.log('updateUI: No game instance or player found');
+                return;
+            }
+            
+            const player = gameInstance.player;
+            
+            // Update health display
+            const healthElement = document.getElementById('health');
+            if (healthElement) {
+                let healthDisplay = '';
+                for (let i = 0; i < player.maxHealth; i++) {
+                    if (i < player.health) {
+                        healthDisplay += '♥';
+                    } else {
+                        healthDisplay += '♡';
+                    }
+                }
+                healthElement.textContent = healthDisplay;
+                healthElement.style.color = player.health <= 3 ? '#ff0000' : '#00ff00';
+            }
+            
+            // Update other elements
+            const livesElement = document.getElementById('lives');
+            if (livesElement) livesElement.textContent = player.lives;
+            
+            const ammoElement = document.getElementById('ammo');
+            if (ammoElement) {
+                ammoElement.textContent = player.ammo;
+                ammoElement.style.color = player.ammo <= 5 ? '#ff0000' : '#00ff00';
+            }
+            
+            const tntElement = document.getElementById('tnt');
+            if (tntElement) {
+                tntElement.textContent = player.tntCount || 0;
+                tntElement.style.color = (player.tntCount || 0) === 0 ? '#ff0000' : '#ffff00';
+            }
+            
+            const levelElement = document.getElementById('level');
+            if (levelElement) levelElement.textContent = gameInstance.currentLevel;
+            
+            const scoreElement = document.getElementById('score');
+            if (scoreElement) scoreElement.textContent = gameInstance.score;
+            
+            const playerNameElement = document.getElementById('playerNameDisplay');
+            if (playerNameElement) playerNameElement.textContent = gameInstance.playerName || 'Unknown';
+        }
+    </script>
+
+    <script src="js/game.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/enemy.js"></script>
+    <script src="js/bullet.js"></script>
+    <script src="js/tnt.js"></script>
+    <script src="js/powerup.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>
