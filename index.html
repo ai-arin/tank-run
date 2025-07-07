@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tank Run - Retro Tank Game</title>
+    <title>Arin Arcade - Tank Run | Retro Tank Combat Game</title>
+    <meta name="description" content="Arin Arcade presents Tank Run - A retro-style tank combat game. Survive 20 levels with TNT explosives and tactical gameplay!">
+    <meta name="keywords" content="Arin Arcade, tank game, retro game, combat, HTML5 game, javascript game, browser game">
+    <meta name="author" content="Arin Arcade - ai-arin">
+    <meta property="og:title" content="Arin Arcade - Tank Run | Retro Tank Combat Game">
+    <meta property="og:description" content="Experience retro tank combat with TNT explosives across 20 challenging levels!">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Arin Arcade">
     <style>
         body {
             margin: 0;
@@ -64,6 +71,40 @@
             padding: 30px;
             border: 2px solid #00ff00;
             text-align: center;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+        }
+        
+        #arcadeBrand {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px currentColor;
+            animation: colorCycle 3s infinite, pulse 2s infinite alternate;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        @keyframes colorCycle {
+            0% { color: #ff0080; text-shadow: 0 0 20px #ff0080, 0 0 40px #ff0080; }
+            16.66% { color: #ff4000; text-shadow: 0 0 20px #ff4000, 0 0 40px #ff4000; }
+            33.33% { color: #ffff00; text-shadow: 0 0 20px #ffff00, 0 0 40px #ffff00; }
+            50% { color: #00ff00; text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00; }
+            66.66% { color: #0080ff; text-shadow: 0 0 20px #0080ff, 0 0 40px #0080ff; }
+            83.33% { color: #8000ff; text-shadow: 0 0 20px #8000ff, 0 0 40px #8000ff; }
+            100% { color: #ff0080; text-shadow: 0 0 20px #ff0080, 0 0 40px #ff0080; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        
+        #menu h1 {
+            font-size: 36px;
+            margin: 10px 0;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
         }
         
         #nameInput, #leaderboard {
@@ -135,6 +176,7 @@
         </div>
         
         <div id="menu">
+            <div id="arcadeBrand">ARIN ARCADE</div>
             <h1>TANK RUN</h1>
             <p>Retro Tank Combat Game</p>
             <button onclick="showNameInput()">Start Game</button>
