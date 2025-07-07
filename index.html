@@ -154,6 +154,228 @@
             color: #000;
         }
         
+        /* Mobile Touch Controls */
+        #touchControls {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 2px solid #00ff00;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .control-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+        
+        .control-label {
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .control-btn {
+            background: #2d4a2d;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 12px;
+            margin: 2px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            user-select: none;
+            touch-action: manipulation;
+            transition: all 0.1s ease;
+            min-width: 45px;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-btn:active {
+            background: #00ff00;
+            color: #000;
+            transform: scale(0.95);
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .control-btn:hover {
+            background: #3d5a3d;
+            box-shadow: 0 0 5px #00ff00;
+        }
+        
+        /* D-Pad Layout */
+        .dpad {
+            display: grid;
+            grid-template-rows: 1fr 1fr 1fr;
+            grid-template-columns: 1fr;
+            gap: 2px;
+            align-items: center;
+        }
+        
+        .dpad-middle {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2px;
+            align-items: center;
+        }
+        
+        .dpad-center {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+        }
+        
+        .dpad-btn {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        /* Turret Controls */
+        .turret-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .turret-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 16px;
+        }
+        
+        /* Combat Controls */
+        .combat-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .action-btn {
+            padding: 15px 20px;
+            font-size: 12px;
+            min-width: 80px;
+        }
+        
+        .shoot-btn {
+            background: #4a2d2d;
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        
+        .shoot-btn:active {
+            background: #ff4444;
+            color: #000;
+        }
+        
+        .tnt-btn {
+            background: #4a4a2d;
+            border-color: #ffff44;
+            color: #ffff44;
+        }
+        
+        .tnt-btn:active {
+            background: #ffff44;
+            color: #000;
+        }
+        
+        .detonate-btn {
+            background: #4a2d4a;
+            border-color: #ff8844;
+            color: #ff8844;
+        }
+        
+        .detonate-btn:active {
+            background: #ff8844;
+            color: #000;
+        }
+        
+        /* Action Controls */
+        .action-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+        
+        .utility-btn {
+            font-size: 10px;
+            padding: 10px 8px;
+            min-width: 60px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #touchControls {
+                padding: 15px 10px;
+                gap: 10px;
+            }
+            
+            .control-section {
+                min-width: 100px;
+            }
+            
+            .control-btn {
+                min-width: 40px;
+                min-height: 40px;
+                padding: 10px;
+                font-size: 12px;
+            }
+            
+            .action-btn {
+                padding: 12px 15px;
+                font-size: 11px;
+                min-width: 70px;
+            }
+            
+            .utility-btn {
+                font-size: 9px;
+                padding: 8px 6px;
+                min-width: 50px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #touchControls {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .control-section {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .action-controls {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+            }
+            
+            .combat-controls {
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+        
+        /* Hide controls during menu screens */
+        .menu-active #touchControls {
+            display: none;
+        }
+        
         #instructions {
             margin-top: 20px;
             font-size: 12px;
@@ -164,6 +386,49 @@
 <body>
     <div id="gameContainer">
         <canvas id="gameCanvas" width="1024" height="768"></canvas>
+        
+        <!-- Mobile/Tablet Touch Controls -->
+        <div id="touchControls">
+            <div class="control-section">
+                <div class="control-label">MOVEMENT</div>
+                <div class="dpad">
+                    <button class="control-btn dpad-btn" id="upBtn" data-key="ArrowUp">↑</button>
+                    <div class="dpad-middle">
+                        <button class="control-btn dpad-btn" id="leftBtn" data-key="ArrowLeft">←</button>
+                        <div class="dpad-center"></div>
+                        <button class="control-btn dpad-btn" id="rightBtn" data-key="ArrowRight">→</button>
+                    </div>
+                    <button class="control-btn dpad-btn" id="downBtn" data-key="ArrowDown">↓</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-label">TURRET</div>
+                <div class="turret-controls">
+                    <button class="control-btn turret-btn" id="rotateLeftBtn" data-key="KeyQ">Q</button>
+                    <button class="control-btn turret-btn" id="rotateRightBtn" data-key="KeyE">E</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-label">COMBAT</div>
+                <div class="combat-controls">
+                    <button class="control-btn action-btn shoot-btn" id="shootBtn" data-key="Space">SHOOT</button>
+                    <button class="control-btn action-btn tnt-btn" id="tntBtn" data-key="KeyB">TNT</button>
+                    <button class="control-btn action-btn detonate-btn" id="detonateBtn" data-key="KeyN">BOOM</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <div class="control-label">ACTIONS</div>
+                <div class="action-controls">
+                    <button class="control-btn utility-btn" id="coverBtn" data-key="KeyC">COVER</button>
+                    <button class="control-btn utility-btn" id="mapBtn" data-key="KeyM">MAP</button>
+                    <button class="control-btn utility-btn" id="pauseBtn" data-key="KeyP">PAUSE</button>
+                    <button class="control-btn utility-btn" id="leaderBtn" data-key="KeyL">SCORES</button>
+                </div>
+            </div>
+        </div>
         
         <div id="ui">
             <div>Player: <span id="playerNameDisplay">Unknown</span></div>
@@ -253,6 +518,8 @@
                 window.game.gameState = 'menu';
                 console.log('Game state changed to menu');
             }
+            
+            updateControlsVisibility();
         }
         
         function closeLeaderboard() {
@@ -267,6 +534,8 @@
                 // Otherwise show main menu
                 showMenu();
             }
+            
+            updateControlsVisibility();
         }
 
         function showInstructions() {
@@ -293,6 +562,8 @@
             document.getElementById('playerNameDisplay').textContent = playerName;
             document.getElementById('nameInput').style.display = 'none';
             window.game.startGame();
+            
+            updateControlsVisibility();
         }
 
         function showLeaderboard() {
@@ -462,6 +733,123 @@
             const playerNameElement = document.getElementById('playerNameDisplay');
             if (playerNameElement) playerNameElement.textContent = gameInstance.playerName || 'Unknown';
         }
+
+        // Touch Controls Functionality
+        function initializeTouchControls() {
+            console.log('Initializing touch controls...');
+            
+            // Get all control buttons
+            const controlButtons = document.querySelectorAll('.control-btn');
+            
+            controlButtons.forEach(button => {
+                const keyCode = button.getAttribute('data-key');
+                
+                // Handle touch start (button press)
+                button.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    handleControlPress(keyCode, true);
+                    button.classList.add('active');
+                });
+                
+                // Handle touch end (button release)
+                button.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    handleControlPress(keyCode, false);
+                    button.classList.remove('active');
+                });
+                
+                // Handle mouse events for desktop testing
+                button.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    handleControlPress(keyCode, true);
+                    button.classList.add('active');
+                });
+                
+                button.addEventListener('mouseup', function(e) {
+                    e.preventDefault();
+                    handleControlPress(keyCode, false);
+                    button.classList.remove('active');
+                });
+                
+                // Prevent context menu on long press
+                button.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                });
+            });
+            
+            // Hide controls during menu screens
+            updateControlsVisibility();
+        }
+        
+        function handleControlPress(keyCode, isPressed) {
+            if (!window.game) return;
+            
+            // Create synthetic keyboard event
+            const eventType = isPressed ? 'keydown' : 'keyup';
+            const event = new KeyboardEvent(eventType, {
+                code: keyCode,
+                key: getKeyFromCode(keyCode),
+                bubbles: true
+            });
+            
+            // Dispatch the event to the document
+            document.dispatchEvent(event);
+        }
+        
+        function getKeyFromCode(code) {
+            const keyMap = {
+                'ArrowUp': 'ArrowUp',
+                'ArrowDown': 'ArrowDown',
+                'ArrowLeft': 'ArrowLeft',
+                'ArrowRight': 'ArrowRight',
+                'KeyW': 'w',
+                'KeyA': 'a',
+                'KeyS': 's',
+                'KeyD': 'd',
+                'KeyQ': 'q',
+                'KeyE': 'e',
+                'Space': ' ',
+                'KeyB': 'b',
+                'KeyN': 'n',
+                'KeyC': 'c',
+                'KeyM': 'm',
+                'KeyP': 'p',
+                'KeyL': 'l'
+            };
+            return keyMap[code] || code;
+        }
+        
+        function updateControlsVisibility() {
+            const touchControls = document.getElementById('touchControls');
+            const menu = document.getElementById('menu');
+            const nameInput = document.getElementById('nameInput');
+            const leaderboard = document.getElementById('leaderboard');
+            const gameOver = document.getElementById('gameOver');
+            const instructions = document.getElementById('instructions');
+            
+            // Hide controls if any menu is visible
+            const menuVisible = menu.style.display !== 'none' ||
+                               nameInput.style.display === 'block' ||
+                               leaderboard.style.display === 'block' ||
+                               gameOver.style.display === 'block' ||
+                               instructions.style.display === 'block';
+            
+            if (menuVisible) {
+                touchControls.style.display = 'none';
+                document.body.classList.add('menu-active');
+            } else {
+                touchControls.style.display = 'flex';
+                document.body.classList.remove('menu-active');
+            }
+        }
+
+        // Initialize touch controls when page loads
+        window.addEventListener('load', function() {
+            console.log('Page loaded, initializing touch controls...');
+            setTimeout(() => {
+                initializeTouchControls();
+            }, 500);
+        });
     </script>
 
     <script src="js/game.js"></script>
