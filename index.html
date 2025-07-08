@@ -34,33 +34,43 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            max-width: 90vw;
-            max-height: 90vh;
-            margin: 0 auto;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
             transition: transform 0.3s ease;
             transform-origin: center center;
             position: relative;
             overflow: hidden;
-            padding: 10px;
             box-sizing: border-box;
         }
         
         #gameCanvas {
             display: block;
             background: #1a2d1a;
-            max-width: 100%;
-            max-height: calc(100% - 200px); /* Reserve space for UI and controls */
-            object-fit: contain;
+            width: 1280px;
+            height: 960px;
+            max-width: none;
+            max-height: none;
         }
         
-        /* Zoom levels - now applied to entire game container */
+        /* Dynamic sizing based on touch controls visibility */
+        .touch-controls-visible #gameContainer {
+            height: calc(100vh - 180px); /* Reserve space for touch controls */
+        }
+        
+        .touch-controls-hidden #gameContainer {
+            height: 100vh; /* Full height when controls hidden */
+        }
+        
+        /* Zoom levels - calculated to fit screen optimally */
         .zoom-small #gameContainer {
-            transform: scale(0.5);
+            transform: scale(0.4);
         }
         
         .zoom-normal #gameContainer {
-            transform: scale(0.65);
+            transform: scale(0.6);
         }
         
         .zoom-large #gameContainer {
@@ -68,63 +78,58 @@
         }
         
         .zoom-xlarge #gameContainer {
-            transform: scale(0.9);
-            max-height: 90vh;
+            transform: scale(1.0);
         }
         
-        /* Responsive container sizing */
-        @media (max-width: 1600px) {
+        /* Responsive scaling for different screen sizes */
+        @media (max-width: 1400px) {
             .zoom-xlarge #gameContainer {
                 transform: scale(0.9);
-            }
-        }
-        
-        @media (max-width: 1400px) {
-            .zoom-large #gameContainer {
-                transform: scale(0.8);
-            }
-            .zoom-xlarge #gameContainer {
-                transform: scale(0.85);
-            }
-        }
-        
-        @media (max-width: 1200px) {
-            .zoom-normal #gameContainer {
-                transform: scale(0.65);
-            }
-            .zoom-large #gameContainer {
-                transform: scale(0.75);
-            }
-            .zoom-xlarge #gameContainer {
-                transform: scale(0.8);
-            }
-        }
-        
-        @media (max-width: 900px) {
-            .zoom-small #gameContainer {
-                transform: scale(0.5);
-            }
-            .zoom-normal #gameContainer {
-                transform: scale(0.6);
             }
             .zoom-large #gameContainer {
                 transform: scale(0.7);
             }
+        }
+        
+        @media (max-width: 1200px) {
             .zoom-xlarge #gameContainer {
-                transform: scale(0.75);
+                transform: scale(0.8);
+            }
+            .zoom-large #gameContainer {
+                transform: scale(0.65);
+            }
+            .zoom-normal #gameContainer {
+                transform: scale(0.5);
             }
         }
         
-        @media (max-width: 700px) {
-            #gameContainer {
-                max-width: 95vw;
-                max-height: 85vh;
-            }
-            .zoom-small #gameContainer,
-            .zoom-normal #gameContainer,
-            .zoom-large #gameContainer,
+        @media (max-width: 900px) {
             .zoom-xlarge #gameContainer {
+                transform: scale(0.7);
+            }
+            .zoom-large #gameContainer {
+                transform: scale(0.55);
+            }
+            .zoom-normal #gameContainer {
                 transform: scale(0.45);
+            }
+            .zoom-small #gameContainer {
+                transform: scale(0.35);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .zoom-xlarge #gameContainer {
+                transform: scale(0.5);
+            }
+            .zoom-large #gameContainer {
+                transform: scale(0.4);
+            }
+            .zoom-normal #gameContainer {
+                transform: scale(0.35);
+            }
+            .zoom-small #gameContainer {
+                transform: scale(0.3);
             }
         }
         
@@ -281,9 +286,14 @@
             border-top: 2px solid #00ff00;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 10px;
             max-width: 100%;
             box-sizing: border-box;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 180px;
+            z-index: 1000;
         }
         
         .control-section {
@@ -1021,6 +1031,7 @@
             const gameOver = document.getElementById('gameOver');
             const instructions = document.getElementById('instructions');
             const ui = document.getElementById('ui');
+            const body = document.body;
             
             if (!touchControls) {
                 console.log('Touch controls element not found');
@@ -1046,38 +1057,46 @@
             // Show controls only if enabled by user AND no menu is visible AND game has started
             if (touchControlsEnabled && !menuVisible && !gameNotStarted) {
                 touchControls.style.display = 'flex';
-                document.body.classList.remove('menu-active');
-                console.log('Touch controls shown');
+                body.classList.remove('menu-active');
+                body.classList.add('touch-controls-visible');
+                body.classList.remove('touch-controls-hidden');
+                console.log('Touch controls shown - container resized');
             } else {
                 touchControls.style.display = 'none';
+                body.classList.remove('touch-controls-visible');
+                body.classList.add('touch-controls-hidden');
                 if (menuVisible || gameNotStarted) {
-                    document.body.classList.add('menu-active');
+                    body.classList.add('menu-active');
                 } else {
-                    document.body.classList.remove('menu-active');
+                    body.classList.remove('menu-active');
                 }
-                console.log('Touch controls hidden');
+                console.log('Touch controls hidden - container full size');
             }
         }
 
         // Initialize touch controls when page loads
         window.addEventListener('load', function() {
-            console.log('Page loaded, initializing touch controls...');
+            console.log('Page loaded, initializing...');
+            
+            // Apply saved zoom level immediately
+            const savedZoom = localStorage.getItem('tankRunZoomLevel');
+            const zoomLevel = savedZoom || 'xlarge'; // Default to xlarge (Full Size View)
+            
+            const body = document.body;
+            body.classList.remove('zoom-small', 'zoom-normal', 'zoom-large', 'zoom-xlarge');
+            body.classList.add(`zoom-${zoomLevel}`);
+            body.classList.add('touch-controls-hidden'); // Start with controls hidden
+            
+            console.log(`Applied zoom level: ${zoomLevel}`);
+            
+            // Save default if not already saved
+            if (!savedZoom) {
+                localStorage.setItem('tankRunZoomLevel', 'xlarge');
+            }
+            
             setTimeout(() => {
                 initializeTouchControls();
-                
-                // Apply saved zoom level on page load
-                const savedZoom = localStorage.getItem('tankRunZoomLevel');
-                if (savedZoom) {
-                    const body = document.body;
-                    body.classList.remove('zoom-small', 'zoom-normal', 'zoom-large', 'zoom-xlarge');
-                    body.classList.add(`zoom-${savedZoom}`);
-                    console.log(`Applied saved zoom level: ${savedZoom}`);
-                } else {
-                    // Default to xlarge zoom (Full Size View)
-                    document.body.classList.add('zoom-xlarge');
-                    localStorage.setItem('tankRunZoomLevel', 'xlarge');
-                }
-            }, 500);
+            }, 100);
         });
     </script>
 
