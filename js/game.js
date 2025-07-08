@@ -161,6 +161,10 @@ class Game {
                     console.log('Escape key pressed - closing menus');
                     this.handleEscapeKey();
                     break;
+                case 'KeyZ': // Cycle zoom levels
+                    console.log('Z key pressed - cycling zoom');
+                    this.cycleZoom();
+                    break;
                 case 'KeyB': // TNT placement
                     console.log('B key pressed - Game state:', this.gameState, 'Player exists:', !!this.player);
                     if (this.gameState === 'playing' && this.player) {
@@ -405,6 +409,72 @@ class Game {
             // Pause/unpause game
             this.togglePause();
         }
+    }
+    
+    cycleZoom() {
+        // Initialize zoom level if not set
+        if (!this.zoomLevel) {
+            this.zoomLevel = 'normal';
+        }
+        
+        // Cycle through zoom levels
+        const zoomLevels = ['small', 'normal', 'large', 'xlarge'];
+        const currentIndex = zoomLevels.indexOf(this.zoomLevel);
+        const nextIndex = (currentIndex + 1) % zoomLevels.length;
+        this.zoomLevel = zoomLevels[nextIndex];
+        
+        // Apply zoom to body class
+        const body = document.body;
+        // Remove all zoom classes
+        body.classList.remove('zoom-small', 'zoom-normal', 'zoom-large', 'zoom-xlarge');
+        // Add current zoom class
+        body.classList.add(`zoom-${this.zoomLevel}`);
+        
+        // Show zoom notification
+        this.showZoomNotification();
+        
+        console.log(`Zoom level changed to: ${this.zoomLevel}`);
+    }
+    
+    showZoomNotification() {
+        // Create or update zoom notification
+        let notification = document.getElementById('zoomNotification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'zoomNotification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(0, 0, 0, 0.8);
+                color: #00ff00;
+                padding: 10px 15px;
+                border: 2px solid #00ff00;
+                border-radius: 5px;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+                z-index: 1000;
+                transition: opacity 0.3s ease;
+            `;
+            document.body.appendChild(notification);
+        }
+        
+        // Update notification text
+        const zoomNames = {
+            'small': '75% (Small)',
+            'normal': '100% (Normal)',
+            'large': '125% (Large)',
+            'xlarge': '150% (X-Large)'
+        };
+        
+        notification.textContent = `Zoom: ${zoomNames[this.zoomLevel]}`;
+        notification.style.opacity = '1';
+        
+        // Hide notification after 2 seconds
+        clearTimeout(this.zoomNotificationTimeout);
+        this.zoomNotificationTimeout = setTimeout(() => {
+            notification.style.opacity = '0';
+        }, 2000);
     }
     
     // Cache-busting comment - v1.1

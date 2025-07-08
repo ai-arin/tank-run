@@ -33,6 +33,68 @@
         #gameCanvas {
             display: block;
             background: #1a2d1a;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+        }
+        
+        /* Zoom levels */
+        .zoom-small #gameCanvas {
+            transform: scale(0.75);
+        }
+        
+        .zoom-normal #gameCanvas {
+            transform: scale(1.0);
+        }
+        
+        .zoom-large #gameCanvas {
+            transform: scale(1.25);
+        }
+        
+        .zoom-xlarge #gameCanvas {
+            transform: scale(1.5);
+        }
+        
+        /* Responsive canvas container */
+        @media (max-width: 1400px) {
+            .zoom-xlarge #gameCanvas {
+                transform: scale(1.25);
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .zoom-large #gameCanvas {
+                transform: scale(1.0);
+            }
+            .zoom-xlarge #gameCanvas {
+                transform: scale(1.0);
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .zoom-normal #gameCanvas {
+                transform: scale(0.8);
+            }
+            .zoom-large #gameCanvas {
+                transform: scale(0.8);
+            }
+            .zoom-xlarge #gameCanvas {
+                transform: scale(0.8);
+            }
+        }
+        
+        @media (max-width: 700px) {
+            #gameCanvas {
+                width: 100%;
+                height: auto;
+                max-width: 640px;
+                max-height: 480px;
+            }
+            .zoom-small #gameCanvas,
+            .zoom-normal #gameCanvas,
+            .zoom-large #gameCanvas,
+            .zoom-xlarge #gameCanvas {
+                transform: scale(1.0);
+            }
         }
         
         #ui {
@@ -335,6 +397,11 @@
             gap: 5px;
         }
         
+        .action-controls .utility-btn:nth-child(5) {
+            grid-column: 1 / -1;
+            justify-self: center;
+        }
+        
         .utility-btn {
             font-size: 10px;
             padding: 10px 8px;
@@ -409,7 +476,7 @@
 </head>
 <body>
     <div id="gameContainer">
-        <canvas id="gameCanvas" width="1024" height="768"></canvas>
+        <canvas id="gameCanvas" width="1280" height="960"></canvas>
         
         <!-- Mobile/Tablet Touch Controls -->
         <div id="touchControls">
@@ -441,6 +508,7 @@
                     <button class="control-btn utility-btn" id="mapBtn" data-key="KeyM">MAP</button>
                     <button class="control-btn utility-btn" id="pauseBtn" data-key="KeyP">PAUSE</button>
                     <button class="control-btn utility-btn" id="leaderBtn" data-key="KeyL">SCORES</button>
+                    <button class="control-btn utility-btn" id="zoomBtn" data-key="KeyZ">ZOOM</button>
                 </div>
             </div>
             
@@ -484,9 +552,11 @@
                 <p>C - Hide behind cover</p>
                 <p>M - Toggle mini-map</p>
                 <p>P - Pause/Resume</p>
-                <p>Q - Quit to menu</p>
                 <p>L - Show leaderboard</p>
+                <p>Z - Cycle zoom levels (75%, 100%, 125%, 150%)</p>
+                <p>Q - Quit to menu</p>
                 <p>X - Call for multiplayer help</p>
+                <p>Escape - Close menus</p>
                 <br>
                 <h3>Touch Controls:</h3>
                 <p>📱 Toggle on-screen buttons from main menu</p>
@@ -600,6 +670,12 @@
             
             // Show the UI/HUD when game starts
             document.getElementById('ui').style.display = 'block';
+            
+            // Initialize zoom level
+            if (!window.game.zoomLevel) {
+                window.game.zoomLevel = 'normal';
+                document.body.classList.add('zoom-normal');
+            }
             
             window.game.startGame();
             
@@ -898,7 +974,8 @@
                 'KeyC': 'c',
                 'KeyM': 'm',
                 'KeyP': 'p',
-                'KeyL': 'l'
+                'KeyL': 'l',
+                'KeyZ': 'z'
             };
             return keyMap[code] || code;
         }
