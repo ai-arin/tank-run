@@ -15,19 +15,11 @@
         body {
             margin: 0;
             padding: 0;
-            background: #1a1a1a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: #000;
             min-height: 100vh;
             font-family: 'Courier New', monospace;
             color: #00ff00;
-        }
-        
-        #gameContainer {
-            position: relative;
-            border: 2px solid #00ff00;
-            background: #000;
+            overflow: hidden;
         }
         
         #gameContainer {
@@ -158,7 +150,7 @@
             background: rgba(0, 0, 0, 0.8);
             padding: 15px;
             border-radius: 8px;
-            border: 2px solid #00ff00;
+            /* Remove border from HUD */
             backdrop-filter: blur(5px);
         }
         }
@@ -649,7 +641,7 @@
             <button onclick="closeLeaderboard()">BACK</button>
         </div>
         
-        <div id="gameOver">
+        <div id="gameOver" style="display: none;">
             <h2>GAME OVER</h2>
             <p>Final Score: <span id="finalScore">0</span></p>
             <p>Level Reached: <span id="finalLevel">1</span></p>
