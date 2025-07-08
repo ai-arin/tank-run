@@ -34,17 +34,24 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
             max-width: 90vw;
             max-height: 90vh;
             margin: 0 auto;
             transition: transform 0.3s ease;
             transform-origin: center center;
             position: relative;
+            overflow: hidden;
+            padding: 10px;
+            box-sizing: border-box;
         }
         
         #gameCanvas {
             display: block;
             background: #1a2d1a;
+            max-width: 100%;
+            max-height: calc(100% - 200px); /* Reserve space for UI and controls */
+            object-fit: contain;
         }
         
         /* Zoom levels - now applied to entire game container */
@@ -268,12 +275,14 @@
             display: flex;
             justify-content: space-around;
             align-items: flex-start;
-            padding: 20px;
+            padding: 15px 10px;
             background: rgba(0, 0, 0, 0.8);
             border-top: 2px solid #00ff00;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
             margin-top: 10px;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         
         .control-section {
@@ -695,12 +704,6 @@
             // Show the UI/HUD when game starts
             document.getElementById('ui').style.display = 'block';
             
-            // Initialize zoom level
-            if (!window.game.zoomLevel) {
-                window.game.zoomLevel = 'normal';
-                document.body.classList.add('zoom-normal');
-            }
-            
             window.game.startGame();
             
             updateControlsVisibility();
@@ -1041,6 +1044,18 @@
             console.log('Page loaded, initializing touch controls...');
             setTimeout(() => {
                 initializeTouchControls();
+                
+                // Apply saved zoom level on page load
+                const savedZoom = localStorage.getItem('tankRunZoomLevel');
+                if (savedZoom) {
+                    const body = document.body;
+                    body.classList.remove('zoom-small', 'zoom-normal', 'zoom-large', 'zoom-xlarge');
+                    body.classList.add(`zoom-${savedZoom}`);
+                    console.log(`Applied saved zoom level: ${savedZoom}`);
+                } else {
+                    // Default to normal zoom
+                    document.body.classList.add('zoom-normal');
+                }
             }, 500);
         });
     </script>

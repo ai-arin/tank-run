@@ -26,6 +26,9 @@ class Game {
         this.playerName = 'Unknown';
         this.leaderboard = this.loadLeaderboard();
         
+        // Initialize zoom level from localStorage
+        this.initializeZoom();
+        
         // Terrain system
         this.currentTerrain = 'forest';
         this.terrainConfig = {
@@ -414,7 +417,9 @@ class Game {
     cycleZoom() {
         // Initialize zoom level if not set
         if (!this.zoomLevel) {
-            this.zoomLevel = 'normal';
+            // Try to load from localStorage first
+            const savedZoom = localStorage.getItem('tankRunZoomLevel');
+            this.zoomLevel = savedZoom || 'normal';
         }
         
         // Cycle through zoom levels
@@ -423,17 +428,35 @@ class Game {
         const nextIndex = (currentIndex + 1) % zoomLevels.length;
         this.zoomLevel = zoomLevels[nextIndex];
         
+        // Save zoom level to localStorage
+        localStorage.setItem('tankRunZoomLevel', this.zoomLevel);
+        
         // Apply zoom to body class
-        const body = document.body;
-        // Remove all zoom classes
-        body.classList.remove('zoom-small', 'zoom-normal', 'zoom-large', 'zoom-xlarge');
-        // Add current zoom class
-        body.classList.add(`zoom-${this.zoomLevel}`);
+        this.applyZoomLevel();
         
         // Show zoom notification
         this.showZoomNotification();
         
         console.log(`Zoom level changed to: ${this.zoomLevel}`);
+    }
+    
+    applyZoomLevel() {
+        const body = document.body;
+        // Remove all zoom classes
+        body.classList.remove('zoom-small', 'zoom-normal', 'zoom-large', 'zoom-xlarge');
+        // Add current zoom class
+        body.classList.add(`zoom-${this.zoomLevel}`);
+    }
+    
+    initializeZoom() {
+        // Load saved zoom level from localStorage
+        const savedZoom = localStorage.getItem('tankRunZoomLevel');
+        this.zoomLevel = savedZoom || 'normal';
+        
+        // Apply the zoom level
+        this.applyZoomLevel();
+        
+        console.log(`Zoom level initialized to: ${this.zoomLevel}`);
     }
     
     showZoomNotification() {
