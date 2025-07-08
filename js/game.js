@@ -451,7 +451,7 @@ class Game {
     initializeZoom() {
         // Load saved zoom level from localStorage
         const savedZoom = localStorage.getItem('tankRunZoomLevel');
-        this.zoomLevel = savedZoom || 'normal';
+        this.zoomLevel = savedZoom || 'xlarge'; // Default to xlarge (Full Size View)
         
         // Apply the zoom level
         this.applyZoomLevel();

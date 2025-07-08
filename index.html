@@ -56,19 +56,20 @@
         
         /* Zoom levels - now applied to entire game container */
         .zoom-small #gameContainer {
-            transform: scale(0.6);
+            transform: scale(0.5);
         }
         
         .zoom-normal #gameContainer {
-            transform: scale(0.75);
+            transform: scale(0.65);
         }
         
         .zoom-large #gameContainer {
-            transform: scale(0.9);
+            transform: scale(0.8);
         }
         
         .zoom-xlarge #gameContainer {
-            transform: scale(1.0);
+            transform: scale(0.9);
+            max-height: 90vh;
         }
         
         /* Responsive container sizing */
@@ -894,11 +895,14 @@
             const savedPreference = localStorage.getItem('tankRunTouchControls');
             touchControlsEnabled = savedPreference === 'true';
             
+            console.log('Touch controls enabled from localStorage:', touchControlsEnabled);
+            
             // Update toggle button appearance
             updateToggleButton();
             
             // Get all control buttons
             const controlButtons = document.querySelectorAll('.control-btn');
+            console.log('Found control buttons:', controlButtons.length);
             
             controlButtons.forEach(button => {
                 const keyCode = button.getAttribute('data-key');
@@ -938,6 +942,8 @@
             
             // Set initial visibility
             updateControlsVisibility();
+            
+            console.log('Touch controls initialization complete');
         }
         
         function toggleTouchControls() {
@@ -1016,19 +1022,32 @@
             const instructions = document.getElementById('instructions');
             const ui = document.getElementById('ui');
             
-            // Hide controls if any menu is visible OR if UI is hidden (game not started)
-            const menuVisible = menu.style.display !== 'none' ||
-                               nameInput.style.display === 'block' ||
-                               leaderboard.style.display === 'block' ||
-                               gameOver.style.display === 'block' ||
-                               instructions.style.display === 'block';
+            if (!touchControls) {
+                console.log('Touch controls element not found');
+                return;
+            }
             
-            const gameNotStarted = ui.style.display === 'none';
+            // Check if any menu is visible
+            const menuVisible = (menu && menu.style.display !== 'none' && menu.style.display !== '') ||
+                               (nameInput && nameInput.style.display === 'block') ||
+                               (leaderboard && leaderboard.style.display === 'block') ||
+                               (gameOver && gameOver.style.display === 'block') ||
+                               (instructions && instructions.style.display === 'block');
+            
+            const gameNotStarted = ui && (ui.style.display === 'none' || ui.style.display === '');
+            
+            console.log('Controls visibility check:', {
+                touchControlsEnabled,
+                menuVisible,
+                gameNotStarted,
+                uiDisplay: ui ? ui.style.display : 'no ui element'
+            });
             
             // Show controls only if enabled by user AND no menu is visible AND game has started
             if (touchControlsEnabled && !menuVisible && !gameNotStarted) {
                 touchControls.style.display = 'flex';
                 document.body.classList.remove('menu-active');
+                console.log('Touch controls shown');
             } else {
                 touchControls.style.display = 'none';
                 if (menuVisible || gameNotStarted) {
@@ -1036,6 +1055,7 @@
                 } else {
                     document.body.classList.remove('menu-active');
                 }
+                console.log('Touch controls hidden');
             }
         }
 
@@ -1053,8 +1073,9 @@
                     body.classList.add(`zoom-${savedZoom}`);
                     console.log(`Applied saved zoom level: ${savedZoom}`);
                 } else {
-                    // Default to normal zoom
-                    document.body.classList.add('zoom-normal');
+                    // Default to xlarge zoom (Full Size View)
+                    document.body.classList.add('zoom-xlarge');
+                    localStorage.setItem('tankRunZoomLevel', 'xlarge');
                 }
             }, 500);
         });
