@@ -44,7 +44,7 @@
             font-family: 'Courier New', monospace;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             z-index: 100;
-            display: block;
+            display: none; /* Hidden by default until game starts */
             background: rgba(0, 0, 0, 0.3);
             padding: 10px;
             border-radius: 5px;
@@ -546,6 +546,9 @@
             document.getElementById('gameOver').style.display = 'none';
             document.getElementById('instructions').style.display = 'none';
             
+            // Hide the UI/HUD when returning to menu
+            document.getElementById('ui').style.display = 'none';
+            
             // Set game state to menu
             if (window.game) {
                 window.game.gameState = 'menu';
@@ -594,6 +597,10 @@
             window.game.playerName = playerName;
             document.getElementById('playerNameDisplay').textContent = playerName;
             document.getElementById('nameInput').style.display = 'none';
+            
+            // Show the UI/HUD when game starts
+            document.getElementById('ui').style.display = 'block';
+            
             window.game.startGame();
             
             updateControlsVisibility();
@@ -683,6 +690,10 @@
             if (!window.game) {
                 window.game = new Game();
             }
+            
+            // Show the UI/HUD when game starts
+            document.getElementById('ui').style.display = 'block';
+            
             window.game.startGame();
         }
 
@@ -691,6 +702,9 @@
                 window.game.startGame();
             }
             document.getElementById('gameOver').style.display = 'none';
+            
+            // Show the UI/HUD when restarting game
+            document.getElementById('ui').style.display = 'block';
         }
         
         // Debug function to test UI
@@ -896,21 +910,24 @@
             const leaderboard = document.getElementById('leaderboard');
             const gameOver = document.getElementById('gameOver');
             const instructions = document.getElementById('instructions');
+            const ui = document.getElementById('ui');
             
-            // Hide controls if any menu is visible
+            // Hide controls if any menu is visible OR if UI is hidden (game not started)
             const menuVisible = menu.style.display !== 'none' ||
                                nameInput.style.display === 'block' ||
                                leaderboard.style.display === 'block' ||
                                gameOver.style.display === 'block' ||
                                instructions.style.display === 'block';
             
-            // Show controls only if enabled by user AND no menu is visible
-            if (touchControlsEnabled && !menuVisible) {
+            const gameNotStarted = ui.style.display === 'none';
+            
+            // Show controls only if enabled by user AND no menu is visible AND game has started
+            if (touchControlsEnabled && !menuVisible && !gameNotStarted) {
                 touchControls.style.display = 'flex';
                 document.body.classList.remove('menu-active');
             } else {
                 touchControls.style.display = 'none';
-                if (menuVisible) {
+                if (menuVisible || gameNotStarted) {
                     document.body.classList.add('menu-active');
                 } else {
                     document.body.classList.remove('menu-active');
