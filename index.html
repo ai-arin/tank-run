@@ -38,119 +38,129 @@
             width: 100vw;
             height: 100vh;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
+            background: #000;
         }
         
         #gameCanvas {
             display: block;
             background: #1a2d1a;
-            width: 100%;
-            height: 100%;
-            max-width: 100vw;
-            max-height: 100vh;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            transition: all 0.3s ease;
             object-fit: contain;
-            transition: width 0.3s ease, height 0.3s ease;
+            /* Calculate size based on viewport, maintaining 4:3 aspect ratio */
+            width: min(90vw, calc(90vh * 4/3));
+            height: min(90vh, calc(90vw * 3/4));
         }
         
         /* Dynamic sizing based on touch controls visibility */
         .touch-controls-visible #gameContainer {
-            height: calc(100vh - 180px); /* Reserve space for touch controls */
+            height: calc(100vh - 180px);
+            padding: 10px;
+        }
+        
+        .touch-controls-visible #gameCanvas {
+            width: min(90vw, calc((90vh - 180px) * 4/3));
+            height: min(calc(90vh - 180px), calc(90vw * 3/4));
         }
         
         .touch-controls-hidden #gameContainer {
-            height: 100vh; /* Full height when controls hidden */
+            height: 100vh;
+            padding: 20px;
         }
         
-        /* Zoom levels - now applied to canvas sizing */
+        /* Zoom levels - now applied to canvas sizing while maintaining aspect ratio */
         .zoom-small #gameCanvas {
-            width: 60%;
-            height: 60%;
+            width: min(60vw, calc(60vh * 4/3));
+            height: min(60vh, calc(60vw * 3/4));
         }
         
         .zoom-normal #gameCanvas {
-            width: 75%;
-            height: 75%;
+            width: min(75vw, calc(75vh * 4/3));
+            height: min(75vh, calc(75vw * 3/4));
         }
         
         .zoom-large #gameCanvas {
-            width: 90%;
-            height: 90%;
+            width: min(85vw, calc(85vh * 4/3));
+            height: min(85vh, calc(85vw * 3/4));
         }
         
         .zoom-xlarge #gameCanvas {
-            width: 100%;
-            height: 100%;
+            width: min(90vw, calc(90vh * 4/3));
+            height: min(90vh, calc(90vw * 3/4));
         }
         
-        /* Responsive canvas sizing for different screen sizes */
-        @media (max-width: 1400px) {
-            .zoom-xlarge #gameCanvas {
-                width: 95%;
-                height: 95%;
-            }
+        /* Adjust for touch controls visibility */
+        .touch-controls-visible.zoom-small #gameCanvas {
+            width: min(60vw, calc((60vh - 180px) * 4/3));
+            height: min(calc(60vh - 180px), calc(60vw * 3/4));
         }
         
+        .touch-controls-visible.zoom-normal #gameCanvas {
+            width: min(75vw, calc((75vh - 180px) * 4/3));
+            height: min(calc(75vh - 180px), calc(75vw * 3/4));
+        }
+        
+        .touch-controls-visible.zoom-large #gameCanvas {
+            width: min(85vw, calc((85vh - 180px) * 4/3));
+            height: min(calc(85vh - 180px), calc(85vw * 3/4));
+        }
+        
+        .touch-controls-visible.zoom-xlarge #gameCanvas {
+            width: min(90vw, calc((90vh - 180px) * 4/3));
+            height: min(calc(90vh - 180px), calc(90vw * 3/4));
+        }
+        
+        /* Responsive adjustments for smaller screens */
         @media (max-width: 1200px) {
             .zoom-xlarge #gameCanvas {
-                width: 90%;
-                height: 90%;
-            }
-            .zoom-large #gameCanvas {
-                width: 80%;
-                height: 80%;
+                width: min(85vw, calc(85vh * 4/3));
+                height: min(85vh, calc(85vw * 3/4));
             }
         }
         
         @media (max-width: 900px) {
+            #gameContainer {
+                padding: 10px;
+            }
+            
             .zoom-xlarge #gameCanvas {
-                width: 85%;
-                height: 85%;
-            }
-            .zoom-large #gameCanvas {
-                width: 75%;
-                height: 75%;
-            }
-            .zoom-normal #gameCanvas {
-                width: 65%;
-                height: 65%;
+                width: min(80vw, calc(80vh * 4/3));
+                height: min(80vh, calc(80vw * 3/4));
             }
         }
         
         @media (max-width: 600px) {
+            #gameContainer {
+                padding: 5px;
+            }
+            
             .zoom-xlarge #gameCanvas {
-                width: 80%;
-                height: 80%;
-            }
-            .zoom-large #gameCanvas {
-                width: 70%;
-                height: 70%;
-            }
-            .zoom-normal #gameCanvas {
-                width: 60%;
-                height: 60%;
-            }
-            .zoom-small #gameCanvas {
-                width: 50%;
-                height: 50%;
+                width: min(75vw, calc(75vh * 4/3));
+                height: min(75vh, calc(75vw * 3/4));
             }
         }
         
         #ui {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 20px;
+            left: 20px;
             color: #00ff00;
             font-size: 16px;
             font-family: 'Courier New', monospace;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             z-index: 100;
             display: none; /* Hidden by default until game starts */
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px;
-            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #00ff00;
+            backdrop-filter: blur(5px);
+        }
         }
         
         #gameOver {

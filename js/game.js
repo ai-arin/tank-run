@@ -469,35 +469,37 @@ class Game {
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                background: rgba(0, 0, 0, 0.8);
+                background: rgba(0, 0, 0, 0.9);
                 color: #00ff00;
-                padding: 10px 15px;
+                padding: 12px 18px;
                 border: 2px solid #00ff00;
-                border-radius: 5px;
+                border-radius: 8px;
                 font-family: 'Courier New', monospace;
                 font-size: 14px;
+                font-weight: bold;
                 z-index: 1000;
                 transition: opacity 0.3s ease;
+                backdrop-filter: blur(5px);
             `;
             document.body.appendChild(notification);
         }
         
         // Update notification text
         const zoomNames = {
-            'small': 'Compact (60%)',
-            'normal': 'Standard (75%)',
-            'large': 'Large (90%)',
-            'xlarge': 'Maximum (100%)'
+            'small': 'Compact View (60%)',
+            'normal': 'Standard View (75%)',
+            'large': 'Large View (85%)',
+            'xlarge': 'Maximum View (90%)'
         };
         
-        notification.textContent = `View: ${zoomNames[this.zoomLevel]}`;
+        notification.textContent = `${zoomNames[this.zoomLevel]}`;
         notification.style.opacity = '1';
         
-        // Hide notification after 2 seconds
+        // Hide notification after 2.5 seconds
         clearTimeout(this.zoomNotificationTimeout);
         this.zoomNotificationTimeout = setTimeout(() => {
             notification.style.opacity = '0';
-        }, 2000);
+        }, 2500);
     }
     
     // Cache-busting comment - v1.1
