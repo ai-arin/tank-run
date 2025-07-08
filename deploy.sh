@@ -51,27 +51,72 @@ fi
 
 echo ""
 
-# Upload files
+# Upload game files (HTML, JS, CSS)
 echo "📤 Uploading game files..."
 aws s3 sync . s3://$BUCKET_NAME \
-    --exclude "*.md" \
-    --exclude ".git/*" \
-    --exclude "deploy.sh" \
-    --exclude "deploy-production.sh" \
-    --exclude "build.sh" \
-    --exclude "*.DS_Store" \
-    --exclude "node_modules/*" \
-    --exclude "package*.json" \
-    --exclude "awscli_accessKeys.csv" \
-    --exclude "dist/*" \
-    --exclude "temp_build/*" \
+    --include "*.html" \
+    --include "*.css" \
+    --include "js/*" \
+    --include "*.md" \
+    --exclude "*" \
     --delete
 
 if [ $? -eq 0 ]; then
-    echo "✅ Files uploaded successfully"
+    echo "✅ Core game files uploaded successfully"
 else
-    echo "❌ Failed to upload files"
+    echo "❌ Failed to upload core game files"
     exit 1
+fi
+
+# Upload assets (images, audio, etc.)
+echo "📸 Uploading assets..."
+if [ -d "assets" ]; then
+    aws s3 sync assets/ s3://$BUCKET_NAME/assets/ \
+        --delete
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ Assets uploaded successfully"
+    else
+        echo "❌ Failed to upload assets"
+        exit 1
+    fi
+else
+    echo "ℹ️  No assets folder found, skipping asset upload"
+fi
+
+# Set proper content types for images
+echo "🖼️  Setting content types for images..."
+if [ -d "assets/images" ]; then
+    # Set content type for common image formats
+    aws s3 cp s3://$BUCKET_NAME/assets/images/ s3://$BUCKET_NAME/assets/images/ \
+        --recursive \
+        --metadata-directive REPLACE \
+        --content-type "image/png" \
+        --exclude "*" \
+        --include "*.png" || true
+    
+    aws s3 cp s3://$BUCKET_NAME/assets/images/ s3://$BUCKET_NAME/assets/images/ \
+        --recursive \
+        --metadata-directive REPLACE \
+        --content-type "image/jpeg" \
+        --exclude "*" \
+        --include "*.jpg" || true
+    
+    aws s3 cp s3://$BUCKET_NAME/assets/images/ s3://$BUCKET_NAME/assets/images/ \
+        --recursive \
+        --metadata-directive REPLACE \
+        --content-type "image/jpeg" \
+        --exclude "*" \
+        --include "*.jpeg" || true
+    
+    aws s3 cp s3://$BUCKET_NAME/assets/images/ s3://$BUCKET_NAME/assets/images/ \
+        --recursive \
+        --metadata-directive REPLACE \
+        --content-type "image/gif" \
+        --exclude "*" \
+        --include "*.gif" || true
+    
+    echo "✅ Image content types configured"
 fi
 
 echo ""
@@ -131,9 +176,10 @@ echo "   CloudWatch: https://console.aws.amazon.com/cloudwatch/"
 echo ""
 echo "💡 Next Steps:"
 echo "   1. Test your game at the URL above"
-echo "   2. Share the link with friends!"
-echo "   3. Consider setting up a custom domain"
-echo "   4. Monitor usage in AWS Console"
+echo "   2. Check your images at: http://$BUCKET_NAME.s3-website-$REGION.amazonaws.com/assets/images/"
+echo "   3. Share the link with friends!"
+echo "   4. Consider setting up a custom domain"
+echo "   5. Monitor usage in AWS Console"
 echo ""
 echo "💰 Estimated monthly cost: $0.01 - $5.00 (depending on traffic)"
 echo ""

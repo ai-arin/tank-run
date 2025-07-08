@@ -1,6 +1,6 @@
 # Building Tank Run: My First Retro Game with AWS Q CLI - A Developer's Journey
 
-*Published: July 8, 2025*
+*Published: July 7, 2025*
 
 ## Introduction: Starting My Game Development Journey
 
