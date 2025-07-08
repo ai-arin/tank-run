@@ -484,13 +484,13 @@ class Game {
         
         // Update notification text
         const zoomNames = {
-            'small': 'Compact View',
-            'normal': 'Balanced View',
-            'large': 'Detailed View',
-            'xlarge': 'Full Size View'
+            'small': 'Compact (60%)',
+            'normal': 'Standard (75%)',
+            'large': 'Large (90%)',
+            'xlarge': 'Maximum (100%)'
         };
         
-        notification.textContent = `Zoom: ${zoomNames[this.zoomLevel]}`;
+        notification.textContent = `View: ${zoomNames[this.zoomLevel]}`;
         notification.style.opacity = '1';
         
         // Hide notification after 2 seconds

@@ -39,8 +39,6 @@
             height: 100vh;
             margin: 0;
             padding: 0;
-            transition: transform 0.3s ease;
-            transform-origin: center center;
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
@@ -49,10 +47,12 @@
         #gameCanvas {
             display: block;
             background: #1a2d1a;
-            width: 1280px;
-            height: 960px;
-            max-width: none;
-            max-height: none;
+            width: 100%;
+            height: 100%;
+            max-width: 100vw;
+            max-height: 100vh;
+            object-fit: contain;
+            transition: width 0.3s ease, height 0.3s ease;
         }
         
         /* Dynamic sizing based on touch controls visibility */
@@ -64,72 +64,77 @@
             height: 100vh; /* Full height when controls hidden */
         }
         
-        /* Zoom levels - calculated to fit screen optimally */
-        .zoom-small #gameContainer {
-            transform: scale(0.4);
+        /* Zoom levels - now applied to canvas sizing */
+        .zoom-small #gameCanvas {
+            width: 60%;
+            height: 60%;
         }
         
-        .zoom-normal #gameContainer {
-            transform: scale(0.6);
+        .zoom-normal #gameCanvas {
+            width: 75%;
+            height: 75%;
         }
         
-        .zoom-large #gameContainer {
-            transform: scale(0.8);
+        .zoom-large #gameCanvas {
+            width: 90%;
+            height: 90%;
         }
         
-        .zoom-xlarge #gameContainer {
-            transform: scale(1.0);
+        .zoom-xlarge #gameCanvas {
+            width: 100%;
+            height: 100%;
         }
         
-        /* Responsive scaling for different screen sizes */
+        /* Responsive canvas sizing for different screen sizes */
         @media (max-width: 1400px) {
-            .zoom-xlarge #gameContainer {
-                transform: scale(0.9);
-            }
-            .zoom-large #gameContainer {
-                transform: scale(0.7);
+            .zoom-xlarge #gameCanvas {
+                width: 95%;
+                height: 95%;
             }
         }
         
         @media (max-width: 1200px) {
-            .zoom-xlarge #gameContainer {
-                transform: scale(0.8);
+            .zoom-xlarge #gameCanvas {
+                width: 90%;
+                height: 90%;
             }
-            .zoom-large #gameContainer {
-                transform: scale(0.65);
-            }
-            .zoom-normal #gameContainer {
-                transform: scale(0.5);
+            .zoom-large #gameCanvas {
+                width: 80%;
+                height: 80%;
             }
         }
         
         @media (max-width: 900px) {
-            .zoom-xlarge #gameContainer {
-                transform: scale(0.7);
+            .zoom-xlarge #gameCanvas {
+                width: 85%;
+                height: 85%;
             }
-            .zoom-large #gameContainer {
-                transform: scale(0.55);
+            .zoom-large #gameCanvas {
+                width: 75%;
+                height: 75%;
             }
-            .zoom-normal #gameContainer {
-                transform: scale(0.45);
-            }
-            .zoom-small #gameContainer {
-                transform: scale(0.35);
+            .zoom-normal #gameCanvas {
+                width: 65%;
+                height: 65%;
             }
         }
         
         @media (max-width: 600px) {
-            .zoom-xlarge #gameContainer {
-                transform: scale(0.5);
+            .zoom-xlarge #gameCanvas {
+                width: 80%;
+                height: 80%;
             }
-            .zoom-large #gameContainer {
-                transform: scale(0.4);
+            .zoom-large #gameCanvas {
+                width: 70%;
+                height: 70%;
             }
-            .zoom-normal #gameContainer {
-                transform: scale(0.35);
+            .zoom-normal #gameCanvas {
+                width: 60%;
+                height: 60%;
             }
-            .zoom-small #gameContainer {
-                transform: scale(0.3);
+            .zoom-small #gameCanvas {
+                width: 50%;
+                height: 50%;
             }
         }
         
