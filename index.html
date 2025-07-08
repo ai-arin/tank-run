@@ -37,6 +37,13 @@
             background: #000;
         }
         
+        #canvasWrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
         #gameCanvas {
             display: block;
             background: #1a2d1a;
@@ -65,46 +72,38 @@
             padding: 20px;
         }
         
-        /* Zoom levels - now applied to canvas sizing while maintaining aspect ratio */
-        .zoom-small #gameCanvas {
-            width: min(60vw, calc(60vh * 4/3));
-            height: min(60vh, calc(60vw * 3/4));
+        /* Zoom levels - now applied to canvas wrapper (includes canvas + HUD) */
+        .zoom-small #canvasWrapper {
+            transform: scale(0.6);
         }
         
-        .zoom-normal #gameCanvas {
-            width: min(75vw, calc(75vh * 4/3));
-            height: min(75vh, calc(75vw * 3/4));
+        .zoom-normal #canvasWrapper {
+            transform: scale(0.75);
         }
         
-        .zoom-large #gameCanvas {
-            width: min(85vw, calc(85vh * 4/3));
-            height: min(85vh, calc(85vw * 3/4));
+        .zoom-large #canvasWrapper {
+            transform: scale(0.85);
         }
         
-        .zoom-xlarge #gameCanvas {
-            width: min(90vw, calc(90vh * 4/3));
-            height: min(90vh, calc(90vw * 3/4));
+        .zoom-xlarge #canvasWrapper {
+            transform: scale(0.9);
         }
         
         /* Adjust for touch controls visibility */
-        .touch-controls-visible.zoom-small #gameCanvas {
-            width: min(60vw, calc((60vh - 180px) * 4/3));
-            height: min(calc(60vh - 180px), calc(60vw * 3/4));
+        .touch-controls-visible.zoom-small #canvasWrapper {
+            transform: scale(0.55);
         }
         
-        .touch-controls-visible.zoom-normal #gameCanvas {
-            width: min(75vw, calc((75vh - 180px) * 4/3));
-            height: min(calc(75vh - 180px), calc(75vw * 3/4));
+        .touch-controls-visible.zoom-normal #canvasWrapper {
+            transform: scale(0.7);
         }
         
-        .touch-controls-visible.zoom-large #gameCanvas {
-            width: min(85vw, calc((85vh - 180px) * 4/3));
-            height: min(calc(85vh - 180px), calc(85vw * 3/4));
+        .touch-controls-visible.zoom-large #canvasWrapper {
+            transform: scale(0.8);
         }
         
-        .touch-controls-visible.zoom-xlarge #gameCanvas {
-            width: min(90vw, calc((90vh - 180px) * 4/3));
-            height: min(calc(90vh - 180px), calc(90vw * 3/4));
+        .touch-controls-visible.zoom-xlarge #canvasWrapper {
+            transform: scale(0.85);
         }
         
         /* Responsive adjustments for smaller screens */
@@ -139,8 +138,8 @@
         
         #ui {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 10px;
+            left: 10px;
             color: #00ff00;
             font-size: 16px;
             font-family: 'Courier New', monospace;
@@ -150,8 +149,8 @@
             background: rgba(0, 0, 0, 0.8);
             padding: 15px;
             border-radius: 8px;
-            /* Remove border from HUD */
             backdrop-filter: blur(5px);
+            /* Now positioned relative to canvas wrapper, not viewport */
         }
         }
         
@@ -526,17 +525,20 @@
 </head>
 <body>
     <div id="gameContainer">
-        <canvas id="gameCanvas" width="1280" height="960"></canvas>
-        
-        <!-- Game UI/HUD - positioned relative to game container -->
-        <div id="ui">
-            <div>Player: <span id="playerNameDisplay">Unknown</span></div>
-            <div>Health: <span id="health">♥♥♥♥♥♥♥♥♥</span></div>
-            <div>Lives: <span id="lives">3</span></div>
-            <div>Ammo: <span id="ammo">30</span></div>
-            <div>TNT: <span id="tnt">3</span></div>
-            <div>Level: <span id="level">1</span></div>
-            <div>Score: <span id="score">0</span></div>
+        <!-- Canvas and HUD wrapper for relative positioning -->
+        <div id="canvasWrapper">
+            <canvas id="gameCanvas" width="1280" height="960"></canvas>
+            
+            <!-- Game UI/HUD - positioned relative to canvas -->
+            <div id="ui">
+                <div>Player: <span id="playerNameDisplay">Unknown</span></div>
+                <div>Health: <span id="health">♥♥♥♥♥♥♥♥♥</span></div>
+                <div>Lives: <span id="lives">3</span></div>
+                <div>Ammo: <span id="ammo">30</span></div>
+                <div>TNT: <span id="tnt">3</span></div>
+                <div>Level: <span id="level">1</span></div>
+                <div>Score: <span id="score">0</span></div>
+            </div>
         </div>
         
         <!-- Mobile/Tablet Touch Controls -->
