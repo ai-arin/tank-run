@@ -107,6 +107,30 @@
             text-shadow: 0 0 10px #00ff00;
         }
         
+        #touchToggleBtn {
+            background: #2d2d4a;
+            border-color: #4444ff;
+            color: #4444ff;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        #touchToggleBtn:hover {
+            background: #4444ff;
+            color: #000;
+        }
+        
+        #touchToggleBtn.enabled {
+            background: #2d4a2d;
+            border-color: #44ff44;
+            color: #44ff44;
+        }
+        
+        #touchToggleBtn.enabled:hover {
+            background: #44ff44;
+            color: #000;
+        }
+        
         #nameInput, #leaderboard {
             position: absolute;
             top: 50%;
@@ -447,6 +471,9 @@
             <button onclick="showNameInput()">Start Game</button>
             <button onclick="showLeaderboard()">Leaderboard (L)</button>
             <button onclick="showInstructions()">Instructions</button>
+            <button onclick="toggleTouchControls()" id="touchToggleBtn">
+                <span id="touchToggleText">Show Touch Controls</span>
+            </button>
             <div id="instructions" style="display: none;">
                 <h3>Controls:</h3>
                 <p>WASD or Arrow Keys - Move</p>
@@ -460,6 +487,12 @@
                 <p>Q - Quit to menu</p>
                 <p>L - Show leaderboard</p>
                 <p>X - Call for multiplayer help</p>
+                <br>
+                <h3>Touch Controls:</h3>
+                <p>📱 Toggle on-screen buttons from main menu</p>
+                <p>🎮 Perfect for mobile and tablet devices</p>
+                <p>👆 Touch buttons work same as keyboard</p>
+                <p>🔄 Auto-hide during menu screens</p>
                 <br>
                 <p>Survive 20 levels across different terrains!</p>
                 <p>Collect ammo bags and med packs to survive.</p>
@@ -735,8 +768,17 @@
         }
 
         // Touch Controls Functionality
+        let touchControlsEnabled = false;
+        
         function initializeTouchControls() {
             console.log('Initializing touch controls...');
+            
+            // Load saved preference from localStorage
+            const savedPreference = localStorage.getItem('tankRunTouchControls');
+            touchControlsEnabled = savedPreference === 'true';
+            
+            // Update toggle button appearance
+            updateToggleButton();
             
             // Get all control buttons
             const controlButtons = document.querySelectorAll('.control-btn');
@@ -777,8 +819,36 @@
                 });
             });
             
-            // Hide controls during menu screens
+            // Set initial visibility
             updateControlsVisibility();
+        }
+        
+        function toggleTouchControls() {
+            touchControlsEnabled = !touchControlsEnabled;
+            
+            // Save preference to localStorage
+            localStorage.setItem('tankRunTouchControls', touchControlsEnabled.toString());
+            
+            // Update button appearance
+            updateToggleButton();
+            
+            // Update controls visibility
+            updateControlsVisibility();
+            
+            console.log('Touch controls', touchControlsEnabled ? 'enabled' : 'disabled');
+        }
+        
+        function updateToggleButton() {
+            const toggleBtn = document.getElementById('touchToggleBtn');
+            const toggleText = document.getElementById('touchToggleText');
+            
+            if (touchControlsEnabled) {
+                toggleBtn.classList.add('enabled');
+                toggleText.textContent = 'Hide Touch Controls';
+            } else {
+                toggleBtn.classList.remove('enabled');
+                toggleText.textContent = 'Show Touch Controls';
+            }
         }
         
         function handleControlPress(keyCode, isPressed) {
@@ -834,12 +904,17 @@
                                gameOver.style.display === 'block' ||
                                instructions.style.display === 'block';
             
-            if (menuVisible) {
-                touchControls.style.display = 'none';
-                document.body.classList.add('menu-active');
-            } else {
+            // Show controls only if enabled by user AND no menu is visible
+            if (touchControlsEnabled && !menuVisible) {
                 touchControls.style.display = 'flex';
                 document.body.classList.remove('menu-active');
+            } else {
+                touchControls.style.display = 'none';
+                if (menuVisible) {
+                    document.body.classList.add('menu-active');
+                } else {
+                    document.body.classList.remove('menu-active');
+                }
             }
         }
 
