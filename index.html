@@ -528,6 +528,17 @@
     <div id="gameContainer">
         <canvas id="gameCanvas" width="1280" height="960"></canvas>
         
+        <!-- Game UI/HUD - positioned relative to game container -->
+        <div id="ui">
+            <div>Player: <span id="playerNameDisplay">Unknown</span></div>
+            <div>Health: <span id="health">♥♥♥♥♥♥♥♥♥</span></div>
+            <div>Lives: <span id="lives">3</span></div>
+            <div>Ammo: <span id="ammo">30</span></div>
+            <div>TNT: <span id="tnt">3</span></div>
+            <div>Level: <span id="level">1</span></div>
+            <div>Score: <span id="score">0</span></div>
+        </div>
+        
         <!-- Mobile/Tablet Touch Controls -->
         <div id="touchControls">
             <div class="control-section">
@@ -571,18 +582,9 @@
                 </div>
             </div>
         </div>
-        
-        <div id="ui">
-            <div>Player: <span id="playerNameDisplay">Unknown</span></div>
-            <div>Health: <span id="health">♥♥♥♥♥♥♥♥♥</span></div>
-            <div>Lives: <span id="lives">3</span></div>
-            <div>Ammo: <span id="ammo">30</span></div>
-            <div>TNT: <span id="tnt">3</span></div>
-            <div>Level: <span id="level">1</span></div>
-            <div>Score: <span id="score">0</span></div>
-        </div>
-        
-        <div id="menu">
+    </div>
+
+    <div id="menu">
             <div id="arcadeBrand">ARIN ARCADE</div>
             <h1>TANK RUN</h1>
             <p>Retro Tank Combat Game</p>
