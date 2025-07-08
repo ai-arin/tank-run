@@ -30,70 +30,93 @@
             background: #000;
         }
         
+        #gameContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90vw;
+            max-height: 90vh;
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+            position: relative;
+        }
+        
         #gameCanvas {
             display: block;
             background: #1a2d1a;
-            transition: transform 0.3s ease;
-            transform-origin: center center;
         }
         
-        /* Zoom levels */
-        .zoom-small #gameCanvas {
+        /* Zoom levels - now applied to entire game container */
+        .zoom-small #gameContainer {
+            transform: scale(0.6);
+        }
+        
+        .zoom-normal #gameContainer {
             transform: scale(0.75);
         }
         
-        .zoom-normal #gameCanvas {
+        .zoom-large #gameContainer {
+            transform: scale(0.9);
+        }
+        
+        .zoom-xlarge #gameContainer {
             transform: scale(1.0);
         }
         
-        .zoom-large #gameCanvas {
-            transform: scale(1.25);
+        /* Responsive container sizing */
+        @media (max-width: 1600px) {
+            .zoom-xlarge #gameContainer {
+                transform: scale(0.9);
+            }
         }
         
-        .zoom-xlarge #gameCanvas {
-            transform: scale(1.5);
-        }
-        
-        /* Responsive canvas container */
         @media (max-width: 1400px) {
-            .zoom-xlarge #gameCanvas {
-                transform: scale(1.25);
+            .zoom-large #gameContainer {
+                transform: scale(0.8);
+            }
+            .zoom-xlarge #gameContainer {
+                transform: scale(0.85);
             }
         }
         
         @media (max-width: 1200px) {
-            .zoom-large #gameCanvas {
-                transform: scale(1.0);
+            .zoom-normal #gameContainer {
+                transform: scale(0.65);
             }
-            .zoom-xlarge #gameCanvas {
-                transform: scale(1.0);
+            .zoom-large #gameContainer {
+                transform: scale(0.75);
+            }
+            .zoom-xlarge #gameContainer {
+                transform: scale(0.8);
             }
         }
         
         @media (max-width: 900px) {
-            .zoom-normal #gameCanvas {
-                transform: scale(0.8);
+            .zoom-small #gameContainer {
+                transform: scale(0.5);
             }
-            .zoom-large #gameCanvas {
-                transform: scale(0.8);
+            .zoom-normal #gameContainer {
+                transform: scale(0.6);
             }
-            .zoom-xlarge #gameCanvas {
-                transform: scale(0.8);
+            .zoom-large #gameContainer {
+                transform: scale(0.7);
+            }
+            .zoom-xlarge #gameContainer {
+                transform: scale(0.75);
             }
         }
         
         @media (max-width: 700px) {
-            #gameCanvas {
-                width: 100%;
-                height: auto;
-                max-width: 640px;
-                max-height: 480px;
+            #gameContainer {
+                max-width: 95vw;
+                max-height: 85vh;
             }
-            .zoom-small #gameCanvas,
-            .zoom-normal #gameCanvas,
-            .zoom-large #gameCanvas,
-            .zoom-xlarge #gameCanvas {
-                transform: scale(1.0);
+            .zoom-small #gameContainer,
+            .zoom-normal #gameContainer,
+            .zoom-large #gameContainer,
+            .zoom-xlarge #gameContainer {
+                transform: scale(0.45);
             }
         }
         
@@ -553,7 +576,7 @@
                 <p>M - Toggle mini-map</p>
                 <p>P - Pause/Resume</p>
                 <p>L - Show leaderboard</p>
-                <p>Z - Cycle zoom levels (75%, 100%, 125%, 150%)</p>
+                <p>Z - Cycle zoom: Compact → Balanced → Detailed → Full Size</p>
                 <p>Q - Quit to menu</p>
                 <p>X - Call for multiplayer help</p>
                 <p>Escape - Close menus</p>
@@ -562,6 +585,7 @@
                 <p>📱 Toggle on-screen buttons from main menu</p>
                 <p>🎮 Perfect for mobile and tablet devices</p>
                 <p>👆 Touch buttons work same as keyboard</p>
+                <p>🔍 ZOOM button cycles through view sizes</p>
                 <p>🔄 Auto-hide during menu screens</p>
                 <br>
                 <p>Survive 20 levels across different terrains!</p>

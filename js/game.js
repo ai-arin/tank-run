@@ -461,10 +461,10 @@ class Game {
         
         // Update notification text
         const zoomNames = {
-            'small': '75% (Small)',
-            'normal': '100% (Normal)',
-            'large': '125% (Large)',
-            'xlarge': '150% (X-Large)'
+            'small': 'Compact View',
+            'normal': 'Balanced View',
+            'large': 'Detailed View',
+            'xlarge': 'Full Size View'
         };
         
         notification.textContent = `Zoom: ${zoomNames[this.zoomLevel]}`;
